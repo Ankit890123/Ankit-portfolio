@@ -1,0 +1,129 @@
+/* ========== 2025 Modern Portfolio CSS ========== */
+:root{
+  --bg:#0b0f14;
+  --bg-soft:#0f151c;
+  --card:#121923;
+  --text:#e7edf3;
+  --muted:#a6b3c2;
+  --brand:#6ccfff;
+  --brand2:#9ff3c2;
+  --ring:rgba(108,204,255,.35);
+  --shadow:0 10px 30px rgba(0,0,0,.35);
+  --maxw:1100px;
+  --radius:18px;
+}
+:root.light{
+  --bg:#f6f9fc;
+  --bg-soft:#ffffff;
+  --card:#ffffff;
+  --text:#0b1220;
+  --muted:#4b5563;
+  --brand:#0ea5e9;
+  --brand2:#10b981;
+  --ring:rgba(14,165,233,.20);
+  --shadow:0 10px 25px rgba(2,6,23,.08);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(1200px 600px at 70% -10%, rgba(108,204,255,.20), transparent 60%),
+    radial-gradient(900px 500px at -10% 10%, rgba(16,185,129,.10), transparent 60%),
+    var(--bg);
+  color:var(--text);
+  line-height:1.6;
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+.container{width:min(100% - 2rem, var(--maxw)); margin-inline:auto}
+.skip{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+.skip:focus{left:1rem;top:1rem;width:auto;height:auto;background:var(--card);color:var(--text);padding:.5rem .8rem;border-radius:10px;z-index:9999}
+
+/* Header */
+header{
+  position:sticky; top:0; z-index:50; backdrop-filter: blur(10px);
+  background: rgba(11,15,20,.75);
+  border-bottom: 1px solid rgba(231,237,243,.12);
+}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.9rem 0}
+.logo{display:flex;align-items:center;gap:.6rem;font-weight:800;letter-spacing:.3px}
+.logo-badge{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--brand),var(--brand2));box-shadow:var(--shadow);display:grid;place-items:center;font-weight:800;color:#001}
+.nav-links{display:flex;gap:1rem;align-items:center}
+.nav-links a{padding:.55rem .75rem;border-radius:10px;font-weight:500;opacity:.95}
+.nav-links a:hover,.nav-links a.active{background:rgba(231,237,243,.08)}
+.nav-cta{display:flex;gap:.6rem;color: #ccb8b8;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.7rem 1rem;border-radius:12px;border:1px solid rgba(231,237,243,.12);background:var(--bg-soft);color:var(--text);box-shadow:var(--shadow);cursor:pointer}
+.btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#001;border:none}
+.btn.ghost{background:transparent}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.menu{display:none}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:2.2rem;padding:4.5rem 0 2.5rem}
+.title{font-size:clamp(1.8rem, 2.6vw + 1rem, 3.2rem);line-height:1.1;margin:0 0 .8rem;font-weight:900}
+.subtitle{font-size:clamp(1rem, .6vw + .9rem, 1.25rem);color:var(--muted);margin:0 0 1.3rem}
+.hero-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+.card{background:var(--card);border:1px solid rgba(231,237,243,.1);border-radius:var(--radius);padding:1rem;box-shadow:var(--shadow)}
+.stat{font-weight:800;font-size:clamp(1.2rem, 1.5vw + .6rem, 1.9rem)}
+.muted{color:var(--muted)}
+.list{margin:0;padding-left:1.2rem}
+
+/* Sections */
+section{padding:3rem 0}
+.section-title{font-size:clamp(1.2rem, .9vw + 1rem, 1.7rem);margin:0 0 1.2rem;font-weight:800}
+.grid{display:grid;gap:1rem}
+.grid.two{grid-template-columns:1.1fr .9fr}
+.grid.three{grid-template-columns:repeat(3,1fr)}
+.mt{margin-top:.7rem}
+
+/* Skills */
+.skills .chip{padding:.5rem .7rem;border-radius:999px;border:1px solid rgba(231,237,243,.14);background:linear-gradient(180deg, rgba(231,237,243,.06), transparent 60%);font-size:.9rem;display:inline-flex;gap:.5rem;align-items:center}
+.level{height:8px;border-radius:999px;background:rgba(231,237,243,.08);overflow:hidden;position:relative;margin-top:.7rem}
+.level>i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand2))}
+
+/* Projects */
+.filters{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:1rem;color: #6ccfff}
+.filter{padding:.45rem .75rem;border-radius:999px;border:1px solid rgba(231,237,243,.12);background:transparent;cursor:pointer;font-weight:500}
+.filter.active{background:rgba(255, 255, 255, 0.08);color: #6ccfff}
+.projects .project{position:relative;display:grid;gap:.75rem}
+.thumb{aspect-ratio:16/10;border-radius:14px;overflow:hidden;background:linear-gradient(135deg, rgba(108,207,255,.35), rgba(159,243,194,.25));display:grid;place-items:center;color:#001;font-weight:800;font-size:1.2rem}
+.tags{display:flex;flex-wrap:wrap;gap:.4rem}
+.tag{font-size:.75rem;padding:.3rem .55rem;border-radius:999px;border:1px dashed rgba(231,237,243,.2);color:var(--muted)}
+
+/* Timeline */
+.timeline{position:relative;padding-left:1.2rem}
+.timeline::before{content:"";position:absolute;left:10px;top:0;bottom:0;width:2px;background:rgba(231,237,243,.15)}
+.t-item{position:relative;padding-left:2.2rem;margin:0 0 1rem;list-style:none}
+.dot{position:absolute;left:2px;top:.25rem;width:16px;height:16px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 4px var(--ring)}
+
+/* Contact */
+form{display:grid;gap:.8rem}
+input,textarea{width:100%;padding:.85rem 1rem;border-radius:12px;border:1px solid rgba(231,237,243,.15);background:var(--bg-soft);color:var(--text)}
+textarea{min-height:140px;resize:vertical}
+
+/* Footer */
+footer{padding:2rem 0 3rem;border-top:1px solid rgba(231,237,243,.12);color:var(--muted)}
+
+/* Utilities */
+.row{display:flex;gap:.8rem;flex-wrap:wrap}
+.pill{border-radius:999px;padding:.4rem .7rem;border:1px solid rgba(231,237,243,.12)}
+#backTop{position:fixed;right:1rem;bottom:1rem;opacity:0;pointer-events:none;transition:.25s;}
+#backTop.show{opacity:1;pointer-events:auto}
+
+/* Responsive */
+@media (max-width:980px){
+  .hero{grid-template-columns:1fr}
+  .hero-cards{grid-template-columns:1fr 1fr}
+  .grid.three{grid-template-columns:1fr 1fr}
+  .grid.two{grid-template-columns:1fr}
+}
+@media (max-width:700px){
+  .nav-links{display:none}
+  .menu{display:inline-flex}
+  .grid.three{grid-template-columns:1fr}
+  .hero-cards{grid-template-columns:1fr}
+}
