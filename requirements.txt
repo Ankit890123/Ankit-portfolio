@@ -4,4 +4,7 @@ flask-cors
 Flask-Mail
 python-dotenv
 mysql-connector-python
+pymysql
+
+
 
