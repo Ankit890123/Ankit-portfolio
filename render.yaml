@@ -1,0 +1,27 @@
+# Exported from Render on 2025-08-21T21:49:35Z
+services:
+- type: web
+  name: Ankit-portfolio-3
+  runtime: python
+  repo: https://github.com/Ankit890123/Ankit-portfolio
+  plan: free
+  envVars:
+  - key: MAIL_PASSWORD
+    sync: false
+  - key: MAIL_USERNAME
+    sync: false
+  - key: MYSQL_DATABASE
+    sync: false
+  - key: MYSQL_PORT
+    sync: false
+  - key: MYSQL_HOST
+    sync: false
+  - key: MYSQL_PASSWORD
+    sync: false
+  - key: MYSQL_USER
+    sync: false
+  region: oregon
+  buildCommand: pip install -r requirements.txt
+  startCommand: python main.py
+  autoDeployTrigger: commit
+version: "1"
