@@ -1,279 +1,94 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ankit Gupta • Web Developer & DevOps</title>
-  <meta name="description" content="Ankit Gupta – Web Developer & DevOps Engineer. Projects in React, Flask, AWS, Docker, CI/CD, Google Maps, Blockchain." />
-  <meta name="color-scheme" content="dark light" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-  <a class="skip" href="#main">Skip to content</a>
-  <header>
-    <div class="container nav" role="navigation" aria-label="Primary">
-      <div class="logo" aria-label="Home">
-        <div class="logo-badge" aria-hidden="true">AG</div>
-        <span>Ankit Gupta</span>
-      </div>
-      <nav class="nav-links" id="navLinks">
-        <a href="#home" class="active">Home</a>
-        <a href="#about">About</a>
-        <a href="#skills">Skills</a>
-        <a href="#projects">Projects</a>
-        <a href="#experience">Experience</a>
-        <a href="#education">Education</a>
-        <a href="#contact">Contact</a>
-      </nav>
-      <div class="nav-cta">
-        <button class="btn ghost" id="themeToggle" aria-label="Toggle theme">🌓</button>
-        <button class="btn menu" id="menuBtn" aria-controls="navLinks" aria-expanded="false">☰</button>
-        <a class="btn primary" id="resumeBtn" href="https://drive.google.com/file/d/1isG58Xrr3ks3ORNXAGvE3tJqXfn9tQWi/view" target="_blank" rel="opener">Download Resume</a>
-      </div>
-    </div>
-  </header>
+import os
+from flask import Flask, request, jsonify, render_template
+from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
+from flask_mail import Mail, Message
 
-  <main id="main" class="container">
-    <!-- Hero -->
-    <section id="home" class="hero" aria-label="Intro">
-      <div>
-        <h1 class="title">Web Developer & DevOps Engineer</h1>
-        <p class="subtitle">I build fast, scalable web apps and automate deployments (AWS • Docker • CI/CD • React • Flask • SQL).</p>
-        <div class="row" style="margin:1.2rem 0">
-          <a href="#projects" class="btn primary">View Projects</a>
-          <a href="#contact" class="btn">Contact Me</a>
-          <button class="btn ghost" id="copyEmail">Copy Email</button>
-        </div>
-        <div class="hero-cards">
-          <div class="card">
-            <div class="stat" id="statProjects">5+</div>
-            <div class="muted">Projects shipped</div>
-          </div>
-          <div class="card">
-            <div class="stat">DevOps</div>
-            <div class="muted">AWS • Docker • Jenkins • jira • EKS</div>
-          </div>
-          <div class="card">
-            <div class="stat">Web</div>
-            <div class="muted">React • Flask • SQL • PhpMyAdmin</div>
-          </div>
-          <div class="card">
-            <div class="stat">Open Source</div>
-            <div class="muted">GitHub-first workflow</div>
-          </div>
-        </div>
-      </div>
-      <div>
-       <div class="card" style="height:100%">
-      <h3 style="margin-top:0">Quick Snapshot</h3>
-        <ul class="list">
-        <li>Mumbai, India</li>
-        <li>B.E. – Information Technology (2025)</li>
-        <li>Academics: 10th (2019) • 12th (2021) • B.E.-IT (2025)</li>
-        <li>Freelance: Websites and Python Backend</li>
-        <li>Immediate Joiner</li>
-        </ul>
-           <div class="row" style="margin-top:1rem">
-           <span class="chip">Available for Work</span>
-           <span class="chip">Remote/On-site</span>
-        </div>
-</div>
+app = Flask(__name__, static_folder="static", template_folder="templates")
+CORS(app)
 
-      </div>
-    </section>
+# -----------------------------
+# Database Config (Railway env vars)
+# -----------------------------
+db_user = os.environ.get("MYSQLUSER", "root")
+db_pass = os.environ.get("MYSQLPASSWORD", "")
+db_host = os.environ.get("MYSQLHOST", "localhost")
+db_port = os.environ.get("MYSQLPORT", "3306")
+db_name = os.environ.get("MYSQLDATABASE", "portfolio")
 
-    <!-- About -->
-    <section id="about">
-      <h2 class="section-title">About Me</h2>
-      <div class="grid two">
-        <div class="card">
-          <p>I'm Ankit Gupta, a web developer and DevOps practitioner. I build clean, responsive UIs and robust backends, then wire them up to automated CI/CD pipelines. I enjoy shipping practical products for small and medium businesses and optimizing infra for reliability.</p>
-          <p class="muted">Primary stack: HTML, CSS, JS, React, Flask, SQL, AWS, Docker, Jenkins, GitHub Actions, Argo CD, Kubernetes (EKS), Linux, Jira, Firebase, Google Maps.</p>
-        </div>
-        <div class="card">
-          <h3 class="card-title">Highlights</h3>
-          <h1class="card-title">College Projects</h1>
+app.config['SQLALCHEMY_DATABASE_URI'] = (
+    f"mysql+pymysql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
+)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
-          <ul class="list">
-            <li>Built a Water Supply Mapping platform with Google Maps overlays & Firebase.</li>
-            <li>Created an AI-driven interview tracker using OpenCV, Mediapipe & DeepFace.</li>
-            <li>Hands-on with blockchain mini projects (Flask, Hardhat, Web3).</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+# -----------------------------
+# Mail Config
+# -----------------------------
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.environ.get("MAIL_USERNAME", "")
+app.config['MAIL_PASSWORD'] = os.environ.get("MAIL_PASSWORD", "")
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get("MAIL_USERNAME", "")
 
-    <!-- Skills -->
-    <section id="skills">
-      <h2 class="section-title">Skills</h2>
-      <div class="grid three skills">
-        <div class="card">
-          <h3 class="card-title">Frontend</h3>
-          <div class="row">
-            <span class="chip">HTML5</span>
-            <span class="chip">CSS3</span>
-            <span class="chip">JavaScript</span>
-            <span class="chip">Tailwind</span>
-          </div>
-          <div class="level" aria-label="Frontend level"><i style="width:85%"></i></div>
-        </div>
-        <div class="card">
-          <h3 class="card-title">Backend</h3>
-          <div class="row">
-            <span class="chip">Python</span>
-            <span class="chip">Flask</span>
-            <span class="chip">PhpMyAdmin</span>
-            <span class="chip">SQL</span>
-            <span class="chip">XAMPP</span>
-            <span class="chip">jinja</span>
-            <span class="chip">REST APIs</span>
-          </div>
-          <div class="level" aria-label="Backend level"><i style="width:80%"></i></div>
-        </div>
-        <div class="card">
-          <h3 class="card-title">DevOps</h3>
-          <div class="row">
-            <span class="chip">AWS</span>
-            <span class="chip">Docker</span>
-            <span class="chip">Kubernetes (EKS)</span>
-            <span class="chip">Jenkins</span>
-            <span class="chip">GitHub Actions</span>
-            <span class="chip">Argo CD</span>
-            <span class="chip">Linux</span>
-          </div>
-          <div class="level" aria-label="DevOps level"><i style="width:78%"></i></div>
-        </div>
-      </div>
-    </section>
+mail = Mail(app)
 
-    <!-- Projects -->
-    <section id="projects">
-      <h2 class="section-title">Projects</h2>
-      <div class="filters" role="tablist" aria-label="Project filters">
-        <button class="filter active" data-filter="all" role="tab" aria-selected="true">All</button>
-        <button class="filter" data-filter="web" role="tab">Web</button>
-        <button class="filter" data-filter="devops" role="tab">DevOps</button>
-        <button class="filter" data-filter="blockchain" role="tab">Blockchain</button>
-        <button class="filter" data-filter="ai" role="tab">AI/CV</button>
-        <button class="filter" data-filter="maps" role="tab">Maps</button>
-      </div>
-      <div class="grid three projects" id="projectGrid">
-        <article class="card project" data-tags="web maps flask react">
-          <div class="thumb" aria-label="Water Supply Mapping screenshot">Water Mapping</div>
-          <div>
-            <h3 class="card-title">Water Supply Mapping System</h3>
-            <p class="muted">Html + Css + Js + React + Flask + Firebase + Google Maps API. Visualizes pipelines & connections with admin panels and grievances.</p>
-            <div class="tags">
-              <span class="tag">React</span>
-              <span class="tag">Flask</span>
-              <span class="tag">Firebase</span>
-              <span class="tag">Maps</span>
-            </div>
-            <div class="row mt">
-              <a class="btn" href="#" target="_blank" rel="noopener">Live Demo</a>
-              <a class="btn ghost" href="https://github.com/Ankit890123/Web-Mobile-based-tool-for-mapping-of-Water-supply-network" target="_blank" rel="noopener">Code</a>
-            </div>
-          </div>
-        </article>
+# -----------------------------
+# Database Model
+# -----------------------------
+class Contact(db.Model):
+    __tablename__ = "contact"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), nullable=False)
+    message = db.Column(db.Text, nullable=False)
 
-        <article class="card project" data-tags="web react flask sql">
-          <div class="thumb" aria-label="Laundry System screenshot">Laundry</div>
-          <div>
-            <h3 class="card-title">Laundry Management System</h3>
-            <p class="muted">Order tracking, pickup scheduling & admin dashboard built with React, Flask & SQL.</p>
-            <div class="tags">
-              <span class="tag">React</span>
-              <span class="tag">Flask</span>
-              <span class="tag">SQL</span>
-            </div>
-            <div class="row mt">
-              <a class="btn" href="#" target="_blank" rel="noopener">Live Demo</a>
-              <a class="btn ghost" href="#" target="_blank" rel="noopener">Code</a>
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
+with app.app_context():
+    db.create_all()
 
-    <!-- Experience -->
-    <section id="experience">
-      <h2 class="section-title">Experience</h2>
-      <ol class="timeline">
-        <li class="t-item">
-          <span class="dot" aria-hidden="true"></span>
-          <h3 class="card-title">Freelance Web Developer</h3>
-          <div class="muted">2023 – Present • SEO, custom sites for SMEs</div>
-          <p>Delivered SEO-friendly, responsive websites, optimized Core Web Vitals, integrated forms & analytics.</p>
-        </li>
-        <li class="t-item">
-          <span class="dot" aria-hidden="true"></span>
-          <h3 class="card-title">DevOps Practice</h3>
-          <div class="muted">2024 – Present • AWS, Docker, Jenkins, GitHub Actions, EKS, Argo CD</div>
-          <p>Built CI/CD pipelines, containerized apps, implemented GitOps deployments to EKS.</p>
-        </li>
-      </ol>
-    </section>
+# -----------------------------
+# Routes
+# -----------------------------
+@app.route('/')
+def home():
+    return render_template('index.html')
 
-    <!-- Education -->
-    <section id="education">
-      <h2 class="section-title">Education</h2>
-      <div class="grid two edu">
-        <div class="card">
-          <h3 class="card-title">B.E. – Information Technology</h3>
-          <div class="muted">2021 – 2025 </div>
-          <p>Core: Data Structures, DBMS, Networks, OS, Web, DevOps.</p>
-        </div>
-        <div class="card">
-          <h3 class="card-title">12th – Science</h3>
-          <div class="muted">2019 – 2021 </div>
-          <p>Maths, Physics, Chemistry, Computer Science.</p>
-        </div>
-        <div class="card">
-          <h3 class="card-title">10th</h3>
-          <div class="muted">2018 – 2019 </div>
-          <p>Foundation in mathematics & science; interest in computing.</p>
-        </div>
-      </div>
-    </section>
+@app.route('/contact', methods=['POST'])
+def contact():
+    data = request.get_json()
+    if not data:
+        return jsonify({"status": "error", "message": "No JSON sent"}), 400
 
-    <!-- Contact -->
-    <section id="contact">
-      <h2 class="section-title">Contact</h2>
-      <div class="grid two">
-        <div class="card">
-          
-<form id="contactForm">
-    <input type="text" id="name" placeholder="Name" required><br><br>
-    <input type="email" id="email" placeholder="Email" required><br><br>
-    <textarea id="message" placeholder="Message" required></textarea><br><br>
-    <button class="btn btn-primary text-uppercase" id="submitButton" type="submit">Send</button>
-  </form>
+    name = data.get('name')
+    email = data.get('email')
+    message = data.get('message')
 
+    if not name or not email or not message:
+        return jsonify({"status": "error", "message": "All fields are required"}), 400
 
-        </div>
-        <div class="card">
-          <h3 class="card-title">Connect</h3>
-          <p>Email: ankit890123@gmai.com</p>
-          <p>Location: <span id="locText">Mumbai, IN</span></p>
-          <div class="row">
-            <a class="btn" id="githubLink" href="https://github.com/Ankit890123" target="_blank" rel="noopener">GitHub</a>
-            <a class="btn" id="linkedinLink" href="https://www.linkedin.com/in/ankitgupta-devops/" target="_blank" rel="noopener">LinkedIn</a>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
+    # Save in DB
+    new_contact = Contact(name=name, email=email, message=message)
+    db.session.add(new_contact)
+    db.session.commit()
 
-  <footer>
-    <div class="container row footer">
-      <span>© <span id="year"></span> Ankit Gupta • Built </span>
-      <button id="backTop" class="btn" aria-label="Back to top">↑ Top</button>
-    </div>
-  </footer>
+    # Send email
+    if app.config['MAIL_USERNAME'] and app.config['MAIL_PASSWORD']:
+        try:
+            msg = Message(
+                subject=f"📩 New Contact Form Submission from {name}",
+                recipients=[app.config['MAIL_DEFAULT_SENDER']],
+                body=f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
+            )
+            mail.send(msg)
+        except Exception as e:
+            print("Email sending failed:", e)
 
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
-</body>
-</html>
+    return jsonify({"status": "success", "message": "Saved in DB ✅ & Email Sent 📧"})
+
+# -----------------------------
+# Run App
+# -----------------------------
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
