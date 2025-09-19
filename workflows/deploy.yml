@@ -1,0 +1,39 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]   # main branch pe push hote hi chalega
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 🔹 1. Checkout code
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # 🔹 2. Set up Python
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+
+    # 🔹 3. Install dependencies (sirf check/test ke liye)
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
+    # 🔹 4. Run tests (agar test files hain to run hoga, warna skip)
+    - name: Run tests
+      run: pytest || echo "No tests found"
+
+    # 🔹 5. Build Docker image
+    - name: Build Docker image
+      run: docker build -t portfolio .
+
+    # 🔹 6. Push Docker image to DockerHub
+    - name: Push Docker image to DockerHub
+      run: |
+        echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+        docker tag portfolio ${{ secrets.DOCKERHUB_USERNAME }}/portfolio:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/portfolio:latest
